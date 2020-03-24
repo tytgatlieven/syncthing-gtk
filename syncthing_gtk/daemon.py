@@ -709,7 +709,7 @@ class Daemon(GObject.GObject, TimerManager):
 		elif isinstance(exception, TLSUnsupportedException):
 			self.emit("connection-error", Daemon.TLS_UNSUPPORTED, exception.message, exception)
 			return
-		self.emit("connection-error", Daemon.UNKNOWN, exception.message, exception)
+		self.emit("connection-error", Daemon.UNKNOWN, exception.full_response, exception)
 
 	def _syncthing_cb_config_in_sync(self, data):
 		"""
