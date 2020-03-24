@@ -388,7 +388,7 @@ class EditorDialog(GObject.GObject):
 		if isinstance(w, Gtk.SpinButton):
 			self.set_value(strip_v(key), int(w.get_adjustment().get_value()))
 		elif isinstance(w, Gtk.Entry):
-			self.set_value(strip_v(key), w.get_text().decode("utf-8"))
+			self.set_value(strip_v(key), w.get_text())
 		elif isinstance(w, Gtk.CheckButton):
 			self.set_value(strip_v(key), w.get_active())
 		elif isinstance(w, Gtk.ComboBox):
@@ -495,6 +495,6 @@ class EditorDialog(GObject.GObject):
 			)
 
 """ Strips 'v' prefix used in widget IDs """
-strip_v = lambda x:  x[1:] if x.startswith("v") else x
+strip_v = lambda x: x[1:] if x.startswith("v") else x
 
 class ValueNotFoundError(KeyError): pass
