@@ -1,13 +1,12 @@
-#/usr/bin/env python3
+#/usr/bin/python3
 import sys, os, gi
 
 if __name__ == "__main__":
 	systempath = "/usr/share/syncthing-gtk"
-	installpath =  os.path.join(os.path.dirname(os.path.realpath(__file__)),
-			'..', 'share', 'syncthing-gtk')
+	installpath = os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'share', 'syncthing-gtk')
 	localpath = "/usr/local/share/syncthing-gtk"
 	paths = (systempath, localpath, installpath)
-	localedir = None	# let gettext to decide
+	localedir = None  # let gettext to decide
 	for path in paths:
 		if os.path.exists(path):
 			localedir = os.path.join(path, '..', 'locale')

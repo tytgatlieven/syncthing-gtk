@@ -2,8 +2,8 @@
 
 from distutils.core import setup
 from distutils.command.build_py import build_py
-from subprocess import Popen, PIPE
-import glob, os
+from subprocess import PIPE, run
+import glob, os, traceback
 APP_ICON_SIZES = (16, 24, 32, 64, 128, 256)
 SI_ICON_SIZES = (16, 24, 32)
 
@@ -13,12 +13,13 @@ def get_version():
 	path. If both methods fails, returns 'unknown'.
 	"""
 	try:
-		p = Popen(['git', 'describe', '--tags', '--match', 'v*'], stdout=PIPE)
-		version = p.communicate()[0].strip("\n\r \t")
+		p = run(['git', 'describe', '--tags', '--match', 'v*'], stdout=PIPE)
+		version = p.stdout.decode('utf-8').strip("\n")
 		if p.returncode != 0:
 			raise Exception("git-describe failed")
 		return version
-	except: pass
+	except Exception as e:
+		traceback.print_exc()
 	# Git-describe method failed, try to guess from working directory name
 	path = os.getcwd().split(os.path.sep)
 	version = 'unknown'
