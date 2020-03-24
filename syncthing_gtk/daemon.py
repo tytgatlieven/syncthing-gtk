@@ -1167,9 +1167,9 @@ class RESTRequest(Gio.SocketClient):
 
 	def _split_headers(self, buffer):
 		try:
-			headers, response = buffer.split(b"\r\n\r\n", 1)
-			headers = headers.split(b"\r\n")
-			code = int(headers[0].split(b" ")[1])
+			headers, response = buffer.split("\r\n\r\n", 1)
+			headers = headers.split("\r\n")
+			code = int(headers[0].split(" ")[1])
 			if code == 401:
 				self._error(HTTPAuthException(buffer))
 				return None, None
@@ -1316,7 +1316,7 @@ class EventPollLoop(RESTRequest):
 			self._connection.close(None)
 			return
 
-		buffer = response.get_data()
+		buffer = response.get_data().decode('utf-8')
 		assert type(buffer) == str
 		headers, response = self._split_headers(buffer)
 		if headers is None: return
@@ -1339,7 +1339,7 @@ class EventPollLoop(RESTRequest):
 		if self._epoch != self._parent._epoch:
 			self._connection.close(None)
 			return
-		data = response.get_data()
+		data = response.get_data().decode('utf-8')
 		if len(data) == 0:
 			# Connection broken
 			self._connection.close(None)
@@ -1370,7 +1370,7 @@ class EventPollLoop(RESTRequest):
 			try:
 				# Try to decode chunk. May raise exception if only very few bytes
 				# have been read so far
-				size_str, rest = self._buffer.split(b"\r\n", 1)
+				size_str, rest = self._buffer.split("\r\n", 1)
 				self._chunk_size = int(size_str, 16)
 				self._buffer = rest
 				if self._chunk_size < 1:
