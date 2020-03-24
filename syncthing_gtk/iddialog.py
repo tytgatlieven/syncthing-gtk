@@ -5,13 +5,13 @@ Syncthing-GTK - IDDialog
 Dialog with Device ID and generated QR code
 """
 
-
-from gi.repository import Gio, GLib
-from .tools import IS_WINDOWS
 from syncthing_gtk.uibuilder import UIBuilder
-import urllib, http.client, ssl
+import urllib, ssl
 import os, tempfile, logging
 log = logging.getLogger("IDDialog")
+
+#This is only needed for QR code reading
+ssl._create_default_https_context = ssl._create_unverified_context
 
 class IDDialog(object):
 	""" Dialog with Device ID and generated QR code """
@@ -19,7 +19,6 @@ class IDDialog(object):
 		self.app = app
 		self.device_id = device_id
 		self.setup_widgets()
-		self.ssl_ctx = create_ssl_context()
 		self.load_data()
 	
 	def __getitem__(self, name):
@@ -44,17 +43,9 @@ class IDDialog(object):
 	
 	def load_data(self):
 		""" Loads QR code from Syncthing daemon """
-		if IS_WINDOWS:
-			return self.load_data_urllib()
-		uri = "%s/qr/?text=%s" % (self.app.daemon.get_webui_url(), self.device_id)
-		io = Gio.file_new_for_uri(uri)
-		io.load_contents_async(None, self.cb_syncthing_qr, ())
-	
-	def load_data_urllib(self):
-		""" Loads QR code from Syncthing daemon """
 		uri = "%s/qr/?text=%s" % (self.app.daemon.get_webui_url(), self.device_id)
 		api_key = self.app.daemon.get_api_key()
-		opener = urllib.request.build_opener(DummyHTTPSHandler(self.ssl_ctx))
+		opener = urllib.request.build_opener(urllib.request.HTTPSHandler())
 		if not api_key is None:
 			opener.addheaders = [("X-API-Key", api_key)]
 		a = opener.open(uri)
@@ -83,40 +74,10 @@ class IDDialog(object):
 				tf.close()
 				self["vQR"].set_from_file(tf.name)
 				os.unlink(tf.name)
-		except GLib.Error as e:
-			if e.code in [14, 15]:
-				# Unauthorized. Grab CSRF token from daemon and try again
-				log.warning("Failed to load image using glib. Retrying with urllib2.")
-				self.load_data_urllib()
 		except Exception as e:
 			log.exception(e)
 			return
 		finally:
 			del io
 
-def create_ssl_context():
-	""" May return NULL if ssl is not available """
-	if hasattr(ssl, "create_default_context"):
-		ctx = ssl.create_default_context()
-		ctx.check_hostname = False
-		ctx.verify_mode = ssl.CERT_NONE
-	else:
-		log.warning("SSL is not available, cannot verify server certificate.")
-
-class DummyHTTPSHandler(urllib.request.HTTPSHandler):
-	"""
-	Dummy HTTPS handler that ignores certificate errors. This in unsafe,
-	but used ONLY for QR code images.
-	"""
-	def __init__(self, ctx):
-		urllib.request.HTTPSHandler.__init__(self)
-		self.ctx = ctx
-	
-	def https_open(self, req):
-		return self.do_open(self.getConnection, req)
-	
-	def getConnection(self, host, timeout=300):
-		if not self.ctx is None:
-			return http.client.HTTPSConnection(host, context=self.ctx)
-		return True
 
