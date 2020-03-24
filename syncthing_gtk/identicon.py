@@ -70,7 +70,7 @@ class IdentIcon(Gtk.DrawingArea):
 		cr.set_source_rgba(*self.color)
 		# Do drawing
 		for row in range(0, self.size):
-			for col in range(0, middle_col + 1):
+			for col in range(0, int(middle_col) + 1):
 				if should_fill_rect_at(row, col):
 					fill_rect_at(row, col)
 					if should_mirror_rect_at(row, col):
