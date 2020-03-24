@@ -32,7 +32,7 @@ GTK3 &amp; Python based GUI and notification area icon for [Syncthing](https://g
 - Or, in worst case scenario, download [latest tarball](https://github.com/kozec/syncthing-gui/releases/latest), extract it and run syncthing-gtk.py.
 
 ##### Dependencies
-- python 2.7, GTK 3.8 or newer and [PyGObject](https://live.gnome.org/PyGObject)
+- python 3.6+, GTK 3.8 or newer and [PyGObject](https://live.gnome.org/PyGObject)
 - [python-gi-cairo](https://packages.debian.org/sid/python-gi-cairo),
 [gir1.2-notify](https://packages.debian.org/sid/gir1.2-notify-0.7) and [gir1.2-rsvg](https://packages.debian.org/sid/gir1.2-rsvg-2.0) on debian based distros (included in PyGObject elsewhere)
 - [python-dateutil](http://labix.org/python-dateutil) (Python 2 version)
@@ -47,7 +47,7 @@ GTK3 &amp; Python based GUI and notification area icon for [Syncthing](https://g
 - [this Gnome Shell extension](https://extensions.gnome.org/extension/615/appindicator-support/), if running Gnome Shell
 - [gir1.2-appindicator3](https://packages.debian.org/sid/gir1.2-appindicator3-0.1) (part of [libappindicator](https://launchpad.net/libappindicator)), if running Gnome Shell or Unity
 
-##### Windows Building Dependencies _(you don't need to install these just to **run** Syncthing-GTK)_
+##### Windows Building Dependencies _(you don't need to install these just to **run** Syncthing-GTK)_ - NOT TESTED AT ALL FOR PYTHON3!!!
 - Python for Windows 2.7
 - [PyGObject for Windows](http://sourceforge.net/projects/pygobjectwin32/) with GTK3 enabled (tested with version 3.14.0)
 - [python-dateutil](http://labix.org/python-dateutil) (Python 2 version)
