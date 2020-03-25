@@ -2,3 +2,5 @@ gobject
 PyGObject
 python-dateutil
 bcrypt
+
+versioneer

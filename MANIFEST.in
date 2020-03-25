@@ -1,0 +1,2 @@
+include versioneer.py
+include syncthing_gtk/_version.py

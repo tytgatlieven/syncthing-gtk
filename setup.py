@@ -1,37 +1,14 @@
 #!/usr/bin/python3
 
-from distutils.core import setup
-from distutils.command.build_py import build_py
+from setuptools import setup
+from setuptools.command.build_py import build_py
 from subprocess import PIPE, run
 import glob, os, traceback
+
+import versioneer
+
 APP_ICON_SIZES = (16, 24, 32, 64, 128, 256)
 SI_ICON_SIZES = (16, 24, 32)
-
-def get_version():
-	"""
-	Returns current package version using git-describe or examining
-	path. If both methods fails, returns 'unknown'.
-	"""
-	try:
-		p = run(['git', 'describe', '--tags', '--match', 'v*'], stdout=PIPE)
-		version = p.stdout.decode('utf-8').strip("\n")
-		if p.returncode != 0:
-			raise Exception("git-describe failed")
-		return version
-	except Exception as e:
-		traceback.print_exc()
-	# Git-describe method failed, try to guess from working directory name
-	path = os.getcwd().split(os.path.sep)
-	version = 'unknown'
-	while len(path):
-		# Find path component that matches 'syncthing-gui-vX.Y.Z'
-		if path[-1].startswith("syncthing-gui-") or path[-1].startswith("syncthing-gtk-"):
-			version = path[-1].split("-")[-1]
-			if not version.startswith("v"):
-				version = "v%s" % (version,)
-			break
-		path = path[0:-1]
-	return version
 
 class BuildPyEx(build_py):
 	""" Little extension to install command; Allows --nostdownloader argument """
@@ -112,7 +89,7 @@ if __name__ == "__main__" :
 	]
 	setup(
 		name = 'syncthing-gtk',
-		version = get_version(),
+		version=versioneer.get_version(),
 		description = 'GTK3 GUI for Syncthing',
 		url = 'https://github.com/syncthing/syncthing-gtk',
 		packages = ['syncthing_gtk'],
@@ -122,5 +99,5 @@ if __name__ == "__main__" :
 		),
 		data_files = data_files,
 		scripts = [ "scripts/syncthing-gtk" ],
-		cmdclass = { 'build_py': BuildPyEx },
+		cmdclass = { 'build_py': BuildPyEx, 'versioneer': versioneer.get_cmdclass() },
 	)
