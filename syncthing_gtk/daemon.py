@@ -16,7 +16,10 @@ from syncthing_gtk.tools import get_config_dir
 from dateutil import tz
 from xml.dom import minidom
 from datetime import datetime
-import json, os, sys, time, logging, urllib
+import json, os, sys, time, logging
+import urllib
+import urllib.parse
+
 log = logging.getLogger("Daemon")
 
 # Minimal version supported by Daemon class
@@ -140,6 +143,7 @@ class Daemon(GObject.GObject, TimerManager):
 				id:		id of folder
 
 		device-sync-started (id, progress):
+
 			Emitted after device synchronization is started
 				id:			id of folder
 				progress:	synchronization progress (0.0 to 1.0)
@@ -1012,7 +1016,7 @@ class Daemon(GObject.GObject, TimerManager):
 
 	def revert(self, folder_id):
 		""" Asks daemon to revert local changes made in specified folder """
-		id_enc = urllib.quote(folder_id.encode('utf-8'))
+		id_enc = urllib.parse.quote(folder_id.encode('utf-8'))
 		RESTPOSTRequest(self, "db/revert?folder=%s" % (id_enc,), {}, lambda *a: a, lambda *a: log.error(a), folder_id).start()
 
 	def request_events(self):

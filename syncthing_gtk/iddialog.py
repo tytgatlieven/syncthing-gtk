@@ -6,7 +6,9 @@ Dialog with Device ID and generated QR code
 """
 
 from syncthing_gtk.uibuilder import UIBuilder
-import urllib, ssl
+import ssl
+import urllib
+import urllib.request
 import os, tempfile, logging
 log = logging.getLogger("IDDialog")
 
