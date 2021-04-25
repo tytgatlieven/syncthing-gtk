@@ -494,7 +494,7 @@ def set_run_on_startup(enabled, program_name, executable, icon="", description="
 			try:
 				with open(desktopfile, "w") as f:
 					desktop_contents = DESKTOP_FILE % (program_name, executable, icon, description)
-					f.write(desktop_contents.encode('utf-8'))
+					f.write(desktop_contents)
 			except Exception as e:
 				# IO errors or out of disk space... Not really
 				# expected, but may happen
